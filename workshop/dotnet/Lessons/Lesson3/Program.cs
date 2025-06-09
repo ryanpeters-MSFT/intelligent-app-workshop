@@ -1,5 +1,6 @@
 using Core.Utilities.Config;
 // TODO: Step 1 - Add import for Plugins
+using Core.Utilities.Plugins;
 
 // TODO: Step 5 - Add import required for StockService
 
@@ -14,7 +15,7 @@ IKernelBuilder builder = KernelBuilderProvider.CreateKernelWithChatCompletion();
 Kernel kernel = builder.Build();
 
 // TODO: Step 2 - Initialize Time plugin and registration in the kernel
-
+kernel.Plugins.AddFromObject(new TimeInformationPlugin());
 
 // TODO: Step 6 - Initialize Stock Data Plugin and register it in the kernel
 
@@ -27,7 +28,7 @@ ChatHistory chatHistory = new("You are a friendly financial advisor that only em
 OpenAIPromptExecutionSettings promptExecutionSettings = new()
 {
     // Step 3 - Add Auto invoke kernel functions as the tool call behavior
-
+    ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
 };
 
 // Initialize kernel arguments
@@ -49,7 +50,7 @@ do
         chatHistory.AddUserMessage(userInput);
 
         // TODO: Step 4 - Provide promptExecutionSettings and kernel arguments
-        await foreach (var chatUpdate in chatCompletionService.GetStreamingChatMessageContentsAsync(chatHistory))
+        await foreach (var chatUpdate in chatCompletionService.GetStreamingChatMessageContentsAsync(chatHistory, promptExecutionSettings, kernel))
         {
             Console.Write(chatUpdate.Content);
             fullMessage += chatUpdate.Content ?? "";
