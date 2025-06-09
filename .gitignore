@@ -85,6 +85,6 @@ bld/
 [Ll]ogs/
 
 # Frontend/react/npm files
-appsettings.json
+#appsettings.json
 .env
 package-lock.json
